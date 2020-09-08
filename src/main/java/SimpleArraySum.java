@@ -1,17 +1,122 @@
-import java.math.BigInteger;
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
+
+
+import org.w3c.dom.ls.LSOutput;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.reflect.Array;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class SimpleArraySum {
+    public static String getJson(int page,int userId) {
+        URL url = null;
+        try {
+            url = new URL("https://jsonmock.hackerrank.com/api/transactions/search?userId="+userId+"&page="+page);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+        try {
+            HttpURLConnection conn = (HttpURLConnection)url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.connect();
+            int responseCode = conn.getResponseCode();
+            if(responseCode != 200)
+                throw new RuntimeException("HttpResponseCode: " +responseCode);
+            else{
+                BufferedReader bfReader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                String input;
+                StringBuffer response = new StringBuffer();
+                while ((input = bfReader.readLine()) != null) {
+                    response.append(input);
+                }
+                bfReader.close();
+                return response.toString();
 
-    // Complete the hackerrankInString function below.
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return "";
+    }
+    public static void getData(String json,Root root) {
+        json = json.replace("$","");
+        json = json.replace(",\"",";");
+        json = json.replace("},{",";");
+        json = json.replace("}","");
+        json = json.replace("{","");
+        json = json.replace("[","");
+        json = json.replace("]","");
+        json = json.replace(",","");
+        json = json.replace("\"","");
+        String[] jsonArray = json.split(";");
+        Datum data = new Datum();
+        for(int i = 0; i < jsonArray.length; i++){
+            //System.out.println(json[i]);
+            if(jsonArray[i].contains("total_pages:")){
+                root.total_pages= Integer.parseInt(jsonArray[i].substring(jsonArray[i].indexOf(":")+1));
+            }
+            if(jsonArray[i].contains("userId:")){
+                data = new Datum();
+                data.userId = Integer.parseInt(jsonArray[i].substring(jsonArray[i].indexOf(":")+1));
+            }
+            if(jsonArray[i].contains("amount:")){
+                data.amount = Float.parseFloat(jsonArray[i].substring(jsonArray[i].indexOf(":")+1));
+            }
+            if(jsonArray[i].contains("location:id:")){
+                data.location = Integer.parseInt(jsonArray[i].substring(jsonArray[i].indexOf(":")+4));
+            }
+            if(jsonArray[i].contains("ip:")){
+                data.ip = Integer.parseInt(jsonArray[i].substring(jsonArray[i].indexOf(":")+1,jsonArray[i].indexOf(".")));
+                root.data.add(data);
+            }
+        }
+    }
+    public static int getTransactions(int userId, int locationId, int netStart, int netEnd) {
+
+        String json = getJson(1,userId);
+        Root root = new Root();
+        ArrayList<Datum> data = new ArrayList<Datum>();
+        root.data = data;
+        getData(json,root);
+        for(int i = 2; i<=root.total_pages; i++){
+            getData(getJson(i,userId),root);
+        }
+        float totalAmount = 0;
+        for(Datum d : root.data){
+            if(d.userId == userId && d.location == locationId && d.ip >= netStart && d.ip <= netEnd ){
+                totalAmount += d.amount;
+            }
+        }
+
+        return Math.round(totalAmount);
+    }
+    public static void fizzBuzz(int n) {
+        // Write your code here
+        int m3 = 0;
+        int m5 = 0;
+        for (int i = 1; i <= n; i++){
+            m3 = i%3;
+            m5 = i%5;
+            if(m3 == 0 && m5 == 0){
+                System.out.println("FizzBuzz");
+            }else if(m3 == 0 && m5 != 0){
+                System.out.println("Fizz");
+            }else if(m5 == 0 && m3 != 0){
+                System.out.println("Buzz");
+            }else{
+                System.out.println(i);
+            }
+        }
+
+    }
     static String hackerrankInString(String s) {
         String needed = "hackerrank";
         int count = 0;
@@ -26,7 +131,6 @@ public class SimpleArraySum {
         }
         return "NO";
     }
-    // Complete the pangrams function below.
     static String pangrams(String s) {
         String lowerCase = s.toLowerCase();
         lowerCase = lowerCase.replace(" ", "");
@@ -54,16 +158,16 @@ public class SimpleArraySum {
 
         return count;
     }
-        static String timeConversion(String s){
-            SimpleDateFormat date12Format = new SimpleDateFormat("hh:mm:ssaa");
-            SimpleDateFormat date24Format = new SimpleDateFormat("HH:mm:ss");
-            try {
-                return date24Format.format(date12Format.parse(s));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            return "";
+    static String timeConversion(String s){
+        SimpleDateFormat date12Format = new SimpleDateFormat("hh:mm:ssaa");
+        SimpleDateFormat date24Format = new SimpleDateFormat("HH:mm:ss");
+        try {
+            return date24Format.format(date12Format.parse(s));
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
+        return "";
+    }
     public static List<Integer> gradingStudents(List<Integer> grades) {
         List<Integer> result = new ArrayList<Integer>();
         int aux = 0;
@@ -81,8 +185,6 @@ public class SimpleArraySum {
 
         return result;
     }
-
-
     public static int arraySum(int[] array){
         int sum = 0;
         for(int i =0; i < array.length; i++){
@@ -106,8 +208,6 @@ public class SimpleArraySum {
             }
         return result;
     }
-
-    // Complete the aVeryBigSum function below.
     static long aVeryBigSum(long[] ar) {
         long sum = 0;
         for(long a : ar){
@@ -116,7 +216,6 @@ public class SimpleArraySum {
         return sum;
 
     }
-    // Complete the plusMinus function below.
     static void plusMinus(int[] arr) {
         int size = arr.length;
         float positive = 0;
@@ -171,9 +270,6 @@ public class SimpleArraySum {
         }
         return Math.abs(sum1 - sum2);
     }
-
-
-
     private static final Scanner scanner = new Scanner(System.in);
     public static void main(String[] args) {
         /*
@@ -272,10 +368,57 @@ public class SimpleArraySum {
         lista2.forEach(grade -> System.out.println(grade));
         String a = "hhaacckkekrraraannk";
         System.out.println(hackerrankInString(a));
-         */
-
         String s = "We promptly judged antique ivory buckles for the next prize";
         System.out.println(pangrams(s));
+         fizzBuzz(15);
+                 int i = 13;
+        byte[] b = String.valueOf(i).getBytes();
+        for(i = 0; i< b.length; i++){
+            System.out.println(b[i]);
+        }
+         */
+       //getTransactions(2,8,5,50);
 
+        System.out.println(getTransactions(2,8,5,50));
     }
+}
+class Location{
+    public int id;
+    public String address;
+    public String city;
+    public int zipCode;
+}
+
+class Datum{
+    public int id;
+    public int userId;
+    public String userName;
+    public Object timestamp;
+    public String txnType;
+    public float amount;
+    public int location;
+    public int ip;
+
+    @Override
+    public String toString() {
+        return "Datum{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", userName='" + userName + '\'' +
+                ", timestamp=" + timestamp +
+                ", txnType='" + txnType + '\'' +
+                ", amount='" + amount + '\'' +
+                ", location='" + location + '\'' +
+                ", ip='" + ip + '\'' +
+                '}';
+    }
+}
+
+class Root{
+    public String page;
+    public int per_page;
+    public int total;
+    public int total_pages;
+    public List<Datum> data;
+
 }
