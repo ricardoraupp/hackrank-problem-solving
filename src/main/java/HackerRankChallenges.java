@@ -1,11 +1,9 @@
 
-
-import org.w3c.dom.ls.LSOutput;
+import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -14,7 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class SimpleArraySum {
+public class HackerRankChallenges {
     public static String getJson(int page,int userId) {
         URL url = null;
         try {
