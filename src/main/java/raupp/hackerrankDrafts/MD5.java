@@ -1,3 +1,5 @@
+package raupp.hackerrankDrafts;
+
 import java.io.*;
 import java.util.*;
 import java.security.MessageDigest;
@@ -9,7 +11,7 @@ public class MD5 {
         String str = sc.next();
         sc.close();
         try{
-            MessageDigest md = MessageDigest.getInstance("MD5");
+            MessageDigest md = MessageDigest.getInstance("raupp.hackerrankDrafts.MD5");
             md.update(str.getBytes());
             byte[] digest = md.digest();
             for (byte b : digest){

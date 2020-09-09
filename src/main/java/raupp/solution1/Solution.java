@@ -1,4 +1,4 @@
-package raupp;
+package raupp.solution1;
 
 import com.google.gson.Gson;
 
@@ -10,7 +10,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
-public class Solution1 {
+public class Solution {
 
     public static Root getJson(int page,int userId) {
         URL url = null;

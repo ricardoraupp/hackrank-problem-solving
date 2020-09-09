@@ -1,5 +1,5 @@
 
-package raupp;
+package raupp.solution1;
 
 import java.util.List;
 import com.google.gson.annotations.Expose;

@@ -1,5 +1,4 @@
-
-import com.google.gson.Gson;
+package raupp.hackerrankDrafts;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -399,7 +398,7 @@ class Datum{
 
     @Override
     public String toString() {
-        return "Datum{" +
+        return "raupp.hackerrankDrafts.Datum{" +
                 "id=" + id +
                 ", userId=" + userId +
                 ", userName='" + userName + '\'' +
