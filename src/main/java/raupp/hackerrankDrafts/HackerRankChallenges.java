@@ -267,6 +267,46 @@ public class HackerRankChallenges {
         }
         return Math.abs(sum1 - sum2);
     }
+    static int beautifulBinaryString(String b) {
+        char[] string = b.toCharArray();
+        int count = 0;
+        for(int i =0; i < string.length; i++){
+            if(i < string.length-2){
+                if(string[i] == '0' && string[i+1] == '1' && string[i+2] == '0'){
+                    count++;
+                    i+=2;
+                }
+            }
+        }
+        return count;
+
+    }
+    // Complete the hurdleRace function below.
+    // Complete the hurdleRace function below.
+    static int hurdleRace(int k, int[] height) {
+        int max = 0;
+        for(int i=0; i < height.length; i++){
+            max = Math.max(max,height[i]);
+        }
+        if(k-max < 0)
+            return Math.abs(k-max);
+        else
+            return 0;
+
+    }
+
+    static int alternatingCharacters(String s) {
+        char[] string = s.toCharArray();
+        int count = 0;
+        for(int i =0; i < string.length; i++){
+            if(i < string.length-1){
+                if(string[i] == string[i+1]){
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
     private static final Scanner scanner = new Scanner(System.in);
     public static void main(String[] args) {
         /*

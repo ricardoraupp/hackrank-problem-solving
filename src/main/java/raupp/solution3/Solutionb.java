@@ -1,13 +1,15 @@
 package raupp.solution3;
 
 import java.io.*;
-import java.util.*;
-import java.util.stream.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
+
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
 
-class Result {
+class Result2 {
 
     /*
      * Complete the 'kthPerson' function below.
@@ -18,34 +20,43 @@ class Result {
      *  2. INTEGER_ARRAY p
      *  3. INTEGER_ARRAY q
      */
-static class kv {
-    kv(int i, int v){
-        index = i;
-        value = v;
-    }
-    int index;
-    int value;
-    }
+
     public static List<Integer> kthPerson(int k, List<Integer> p, List<Integer> q) {
         // Write your code here
+        int passengers = 0;
+        int kth = 0;
+        int pSize = p.size();
+        int qSize = q.size();
+        int query = 0;
         List<Integer> kths = new ArrayList<Integer>();
-        for(Integer qu : q) {
-            List<kv> match = (List<kv>) IntStream.range(0, p.size())
-                    .parallel()
-                    .mapToObj(index -> {
-                        return new kv(index,p.get(index));
-                    }).filter(pa -> pa.value >= qu).collect(toList());
-            if(match.size() < k){
+        if(k == 0){
+            q.stream().forEach(l -> kths.add(0));
+            return kths;
+        }
+        for(int i =0; i < qSize; i++){
+            kth = 0;
+            passengers = 0;
+            query = q.get(i);
+            for(int j=0; j < pSize; j++){
+                if(query <= p.get(j)){
+                    if(passengers < k){
+                        passengers++;
+                        kth = j;
+                    }
+                }
+            }
+            if(passengers < k){
                 kths.add(0);
             }else{
-                kths.add(match.get(k-1).index+1);
+                kths.add(kth+1);
             }
         }
         return kths;
     }
 
 }
-public class Solution {
+
+public class Solutionb {
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(System.getenv("OUTPUT_PATH")));
